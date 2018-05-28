@@ -30,4 +30,16 @@ public class Site extends GeneralNode {
         result.sigma = this.sigma.clone();
         return result;
     }
+
+    //SETTERS AND GETTERS
+
+    public void setSigma(int i, int value)
+    {
+        this.sigma[i] = value;
+    }
+
+    public int getSigma(int i)
+    {
+        return this.sigma[i];
+    }
 }
