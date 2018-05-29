@@ -15,6 +15,9 @@ public class Site extends GeneralNode {
      */
     private int[] sigma;
 
+    //empty state
+    private boolean empty;
+
 
     public Site(String prefix)
     {
@@ -22,12 +25,14 @@ public class Site extends GeneralNode {
 
         int culturalCodeSize = Configuration.getInt(prefix + "." + F_VALUE);
         this.sigma = new int[culturalCodeSize];
+        this.empty = true;
     }
 
     public Object clone()
     {
         Site result = (Site) super.clone();
         result.sigma = this.sigma.clone();
+        result.empty = this.empty;
         return result;
     }
 
@@ -41,5 +46,15 @@ public class Site extends GeneralNode {
     public int getSigma(int i)
     {
         return this.sigma[i];
+    }
+
+    public boolean isEmpty()
+    {
+        return empty;
+    }
+
+    public void setEmpty(boolean state)
+    {
+        this.empty = state;
     }
 }

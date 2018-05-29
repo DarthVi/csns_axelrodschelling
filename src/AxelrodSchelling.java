@@ -1,6 +1,12 @@
 import peersim.cdsim.CDProtocol;
 import peersim.config.Configuration;
+import peersim.config.FastConfig;
+import peersim.core.CommonState;
+import peersim.core.Linkable;
 import peersim.core.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AxelrodSchelling implements CDProtocol {
 
@@ -16,6 +22,9 @@ public class AxelrodSchelling implements CDProtocol {
 
     //Threshold value for the average cultural overlap
     private final double toleranceThreshold;
+
+    //empty sites list
+    private static List<Integer> emptySites = new ArrayList<Integer>();
 
     public AxelrodSchelling(String prefix)
     {
@@ -37,7 +46,13 @@ public class AxelrodSchelling implements CDProtocol {
     }
 
     @Override
-    public void nextCycle(Node node, int i) {
-        //TODO
+    public void nextCycle(Node node, int pid)
+    {
+
+        Linkable link = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+
+        int randomPeer;
+
+        //TODO: complete this
     }
 }
