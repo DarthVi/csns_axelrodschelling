@@ -50,9 +50,35 @@ public class AxelrodSchelling implements CDProtocol {
     {
 
         Linkable link = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+        List<Integer> nonEmptyNeighbours = getNonEmptyNeighbours(node, pid);
 
         int randomPeer;
 
         //TODO: complete this
+    }
+
+    /*
+       Returns a list of indexes of the linkable structure. The sites associated
+       with these indexes are not empty.
+
+       @param   node    the site whose neighbours we want to analyze
+       @param   pid     the node's pid
+       @return          list of indexes of non empty sites in the linkable structure
+     */
+    private List<Integer> getNonEmptyNeighbours(Node node, int pid)
+    {
+        Linkable link = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+
+        List<Integer> nonEmptyNeighbours = new ArrayList<Integer>();
+
+        for(int i = 0; i < link.degree(); i++)
+        {
+            Site site = (Site) link.getNeighbor(i);
+
+            if(!site.isEmpty())
+                nonEmptyNeighbours.add(i);
+        }
+
+        return nonEmptyNeighbours;
     }
 }
