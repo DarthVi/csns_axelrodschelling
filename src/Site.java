@@ -48,6 +48,11 @@ public class Site extends GeneralNode {
         return this.sigma[i];
     }
 
+    public int getSigmaSize()
+    {
+        return this.sigma.length;
+    }
+
     public boolean isEmpty()
     {
         return empty;
