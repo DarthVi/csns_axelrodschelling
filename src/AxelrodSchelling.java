@@ -59,14 +59,25 @@ public class AxelrodSchelling implements CDProtocol {
 
             double culturalOverlap = computeCulturalOverlap((Site) node, peer);
 
-            //TODO: complete here
+            int chosenTraitIndex = CommonState.r.nextInt(peer.getSigmaSize());
+            int chosenTrait = peer.getSigma(chosenTraitIndex);
+
+            //copy cultural trait with probability equal to culturalOverlap
+            if(CommonState.r.nextDouble() >= culturalOverlap)
+            {
+                ((Site) node).setSigma(chosenTraitIndex, chosenTrait);
+                Interaction.setCulturalChanges(true);
+            }
+            else
+            {
+                if(computeAverageCulturalOverlap((Site) node, pid) < toleranceThreshold)
+                    moveToEmptySite((Site) node);
+            }
         }
         else
         {
             moveToEmptySite((Site) node);
         }
-
-        //TODO: complete this
     }
 
     /*
@@ -108,6 +119,7 @@ public class AxelrodSchelling implements CDProtocol {
         currentSite.setEmpty(true);
         emptySites.remove(emptySiteIndex);
         emptySites.add(currentSite);
+        Interaction.setMoveActivity(true);
     }
 
     /*
@@ -143,5 +155,30 @@ public class AxelrodSchelling implements CDProtocol {
     private int kroneckerDelta(int i, int j)
     {
         return (i == j) ? 1 : 0;
+    }
+
+    /*
+     * Computes the average of the cultural overlap between one node and a neighbor
+     * across all its neighbors.
+     *
+     * @param   node    the node whose average is required
+     * @param   pid     pid of the node
+     * @return          average cultural overlap
+     */
+    private double computeAverageCulturalOverlap(Site node, int pid)
+    {
+        Linkable link = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+        List<Integer> nonEmptyNeighbours = getNonEmptyNeighbours(node, pid);
+
+        double average = 0;
+
+        for(Integer i : nonEmptyNeighbours)
+        {
+            Site peer = (Site) link.getNeighbor(i);
+
+            average += computeCulturalOverlap(node, peer);
+        }
+
+        return average/nonEmptyNeighbours.size();
     }
 }
