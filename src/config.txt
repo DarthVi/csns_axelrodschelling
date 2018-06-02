@@ -1,0 +1,9 @@
+#AxelrodSchelling simulation 1
+
+random.seed 95199254
+simulation.cycles 500
+
+control.shf Shuffle
+
+network.size 50000
+network.node Site
