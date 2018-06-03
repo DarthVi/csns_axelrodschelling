@@ -5,5 +5,18 @@ simulation.cycles 500
 
 control.shf Shuffle
 
-network.size 50000
+network.size 1000
 network.node Site
+
+protocol.lnk IdleProtocol
+
+protocol.interaction Interaction
+
+protocol.axelschel AxelrodSchelling
+protocol.axelschel.linkable lnk
+protocol.axelschel.empty_probability 0.3
+protocol.axelschel.T_treshold 0.51
+
+control.asobserver ASObserver
+control.asobserver.logInterval 100
+control.asobserver.protocol axelschel

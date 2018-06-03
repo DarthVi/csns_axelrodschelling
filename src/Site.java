@@ -48,6 +48,8 @@ public class Site extends GeneralNode {
         return this.sigma[i];
     }
 
+    public int[] getWholeSigma() {return this.sigma.clone();}
+
     public int getSigmaSize()
     {
         return this.sigma.length;

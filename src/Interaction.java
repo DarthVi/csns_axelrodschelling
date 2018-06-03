@@ -1,7 +1,7 @@
 import peersim.cdsim.CDProtocol;
 import peersim.core.Node;
 
-/*
+/**
  * This protocol has only two static fields to log whether after an {@link AxelrodSchelling} cycle
  * any activity (cultural changes or moving Sites) happened. It will be useful to the
  * controller responsible for ending the simulation

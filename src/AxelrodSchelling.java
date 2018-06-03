@@ -80,7 +80,7 @@ public class AxelrodSchelling implements CDProtocol {
         }
     }
 
-    /*
+    /**
        Returns a list of indexes of the linkable structure. The sites associated
        with these indexes are not empty.
 
@@ -105,7 +105,7 @@ public class AxelrodSchelling implements CDProtocol {
         return nonEmptyNeighbours;
     }
 
-    /*
+    /**
         Moves current site to another empty site and makes the current site empty
 
         @param  currentSite     The current site/node to be moved
@@ -122,7 +122,7 @@ public class AxelrodSchelling implements CDProtocol {
         Interaction.setMoveActivity(true);
     }
 
-    /*
+    /**
         computes the cultural overlap between two nodes
 
         @param  site    node requiring the omega/cultural overlap
@@ -144,7 +144,7 @@ public class AxelrodSchelling implements CDProtocol {
 
     }
 
-    /*
+    /**
         Computes the kronecker's delta between i and j
 
         @param  i
@@ -157,7 +157,7 @@ public class AxelrodSchelling implements CDProtocol {
         return (i == j) ? 1 : 0;
     }
 
-    /*
+    /**
      * Computes the average of the cultural overlap between one node and a neighbor
      * across all its neighbors.
      *
