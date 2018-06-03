@@ -17,6 +17,10 @@ protocol.axelschel.linkable lnk
 protocol.axelschel.empty_probability 0.3
 protocol.axelschel.T_treshold 0.51
 
+init.rnd WireKOut
+init.rnd.protocol lnk
+init.rnd.k 20
+
 control.asobserver ASObserver
 control.asobserver.logInterval 100
 control.asobserver.protocol axelschel

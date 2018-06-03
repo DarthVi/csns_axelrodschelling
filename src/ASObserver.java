@@ -102,6 +102,9 @@ public class ASObserver implements Control
                     edgePrinter.printRecord(siteID, id);
                 }
 
+                outNodes.close();
+                outEdges.close();
+
             }
             catch(IOException e)
             {
