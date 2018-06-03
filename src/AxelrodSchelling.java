@@ -63,7 +63,7 @@ public class AxelrodSchelling implements CDProtocol {
             int chosenTrait = peer.getSigma(chosenTraitIndex);
 
             //copy cultural trait with probability equal to culturalOverlap
-            if(CommonState.r.nextDouble() >= culturalOverlap)
+            if(CommonState.r.nextDouble() <= culturalOverlap)
             {
                 ((Site) node).setSigma(chosenTraitIndex, chosenTrait);
                 Interaction.setCulturalChanges(true);

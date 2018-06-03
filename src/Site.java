@@ -3,12 +3,6 @@ import peersim.config.Configuration;
 
 public class Site extends GeneralNode {
 
-    //CONSTANTS
-    //
-    /*parameter value that will initialize the length of the cultural code vector
-     */
-    private static final String F_VALUE = "f_value";
-
     //FIELDS
     /*
     Cultural code vector
@@ -23,8 +17,6 @@ public class Site extends GeneralNode {
     {
         super(prefix);
 
-        int culturalCodeSize = Configuration.getInt(prefix + "." + F_VALUE);
-        this.sigma = new int[culturalCodeSize];
         this.empty = true;
     }
 
@@ -37,6 +29,11 @@ public class Site extends GeneralNode {
     }
 
     //SETTERS AND GETTERS
+
+    protected void allocSigma(int[] ref)
+    {
+        this.sigma = ref;
+    }
 
     public void setSigma(int i, int value)
     {
