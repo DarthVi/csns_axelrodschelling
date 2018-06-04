@@ -8,9 +8,7 @@ import peersim.core.Network;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ASObserver implements Control
 {
@@ -29,8 +27,10 @@ public class ASObserver implements Control
     private int interval;
     private int pid;
     private int culturalCodeSize;
+    private Map<Long, List<Object>> dump;
 
     private CSVPrinter edgePrinter;
+    private CSVPrinter nodePrinter;
 
     public ASObserver(String prefix)
     {
@@ -38,14 +38,30 @@ public class ASObserver implements Control
         pid = Configuration.getPid(prefix + "." + PAR_PROT);
         iterations = 0;
         culturalCodeSize = Configuration.getInt(prefix + "." + F_VALUE);
+        dump = new HashMap<Long, List<Object>>();
 
         FileWriter outEdges = null;
+        FileWriter outNodes = null;
 
         try
         {
             outEdges = new FileWriter("./snapshots/" + EDGEFILENAME  + ".csv");
+            outNodes = new FileWriter("./snapshots/" + NODEFILENAME + ".csv");
 
             edgePrinter = new CSVPrinter(outEdges, CSVFormat.DEFAULT.withHeader(EDGE_HEADERS));
+            String[] NODE_HEADERS;
+
+            //node headers depends on cultural code size, cannot be defined as a static final field
+            NODE_HEADERS = new String[3 + culturalCodeSize];
+            NODE_HEADERS[0] = "Id";
+            NODE_HEADERS[1] = "Empty";
+            NODE_HEADERS[2] = "Interval";
+
+            for(int j = 3; j < NODE_HEADERS.length; j++)
+            {
+                NODE_HEADERS[j] = "code" + (j-3);
+            }
+            nodePrinter = new CSVPrinter(outNodes, CSVFormat.DEFAULT.withHeader(NODE_HEADERS).withQuote(null).withDelimiter('\t'));
         }
         catch(IOException e)
         {
@@ -65,11 +81,14 @@ public class ASObserver implements Control
 
         iterations++;
         if(iterations % interval == 0)
-            serializeNetworkSnapshot(iterations);
+        {
+            saveNetworkSnapshot(iterations);
+        }
 
         //if no imitation or movements occur, stop the simulation
         if((Interaction.getCulturalChanges() == false && Interaction.getMoveActivity() == false && iterations != 1) == true)
         {
+            serializeNetworkSnapshot();
             closeCSVPrinters();
             return true;
         }
@@ -78,78 +97,67 @@ public class ASObserver implements Control
     }
 
     /**
-     * Saves a .csv snapshot of the network compatible with gephi (nodes.csv and edges.csv).
-     * edges.csv contains merely source id and target id, while nodes.csv contains the id and the important attributes
-     * for each site.
+     * Store the network's info in the hashmap. It iterates through the nodes and calls {@link #storeSiteInfo(Site, int)}
      *
-     * @param iterAppend    used as an index to append to the filenames
+     * @param iterAppend    used to set the appropriate time intervals for the dynamic graph, making it readable by gephi
      */
-    private void serializeNetworkSnapshot(int iterAppend)
+    private void saveNetworkSnapshot(int iterAppend)
     {
-
-        FileWriter outNodes = null;
-        CSVPrinter nodePrinter = null;
-
-        try
-        {
-            outNodes = new FileWriter("./snapshots/" + NODEFILENAME + iterAppend  + ".csv");
-            String[] NODE_HEADERS;
-
-            //node headers depends on cultural code size, cannot be defined as a static final field
-            NODE_HEADERS = new String[3 + culturalCodeSize];
-            NODE_HEADERS[0] = "Id";
-            NODE_HEADERS[1] = "Empty";
-            NODE_HEADERS[2] = "Interval";
-
-            for(int j = 3; j < NODE_HEADERS.length; j++)
-            {
-                NODE_HEADERS[j] = "code" + (j-3);
-            }
-            nodePrinter = new CSVPrinter(outNodes, CSVFormat.DEFAULT.withHeader(NODE_HEADERS).withQuote(null));
-
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
 
         for(int i=0; i < Network.size(); i++)
         {
             Site site = (Site) Network.get(i);
 
-            //collect site data
-            long siteID = site.getID();
-            boolean isEmpty = site.isEmpty();
-            int[] culturalCode = site.getWholeSigma();
-
-
-            try
-            {
-                nodePrinter.printRecord(siteID, isEmpty, "\"[" + iterAppend + ", " + (iterAppend + 2) + "\"]", Arrays.toString(culturalCode).replaceAll("[\\\" \\[\\]]", ""));
-            }
-            catch(IOException | NullPointerException e)
-            {
-                e.printStackTrace();
-            }
+            storeSiteInfo(site, iterAppend);
         }
 
-        try
+    }
+
+    /**
+     * Store the site's info in the hashmap. If the site has already been added, the values get updatet, otherwise
+     * a new list of values gets created and initialized appropriately.
+     * @param site
+     * @param iterAppend
+     */
+    public void storeSiteInfo(Site site, int iterAppend)
+    {
+        //collect site data
+        long siteID = site.getID();
+        boolean isEmpty = site.isEmpty();
+        int[] culturalCode = site.getWholeSigma();
+
+        //if this Site has never been added, a new list must be created, else we simply update the values
+        List<Object> retList = dump.get(siteID);
+        if(retList == null)
         {
-            nodePrinter.close();
+             List<Object> infolist = new ArrayList<Object>();
+             infolist.add("<[" + iterAppend + ", " + (iterAppend + interval) + "," + Boolean.toString(isEmpty) + "]>");
+             infolist.add("<[" + iterAppend + "]>");
+
+             for(int i = 0; i < culturalCodeSize; i++)
+             {
+                 infolist.add("<[" + iterAppend + ", " + (iterAppend + interval) + "," + culturalCode[i] + "]>");
+             }
+
+             dump.put(siteID, infolist);
         }
-        catch(IOException | NullPointerException e)
+        else
         {
-            e.printStackTrace();
+            retList.set(0, retList.get(0).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + (iterAppend + interval) + "," + Boolean.toString(isEmpty) + "]>");
+            retList.set(1, retList.get(1).toString().replaceAll("\\]>$", "") + "," + iterAppend + "]>");
+
+            for(int i = 0; i < culturalCodeSize; i++)
+            {
+                retList.set(2 + i, retList.get(2 + i).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + (iterAppend + interval) + "," + culturalCode[i] + "]>");
+            }
         }
-
-
-
     }
 
     public void closeCSVPrinters()
     {
         try
         {
+            nodePrinter.close();
             edgePrinter.close();
         } catch (IOException | NullPointerException e)
         {
@@ -184,6 +192,22 @@ public class ASObserver implements Control
                 {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public void serializeNetworkSnapshot()
+    {
+        for(Map.Entry<Long, List<Object>> entry : dump.entrySet())
+        {
+            try
+            {
+                String infostring = entry.getValue().toString().replaceAll("^\\[|\\[$", "");
+                infostring = infostring.replaceAll(">, ", ">\t");
+                nodePrinter.printRecord(entry.getKey(), infostring);
+            } catch (IOException e)
+            {
+                e.printStackTrace();
             }
         }
     }
