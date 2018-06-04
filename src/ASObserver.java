@@ -131,24 +131,24 @@ public class ASObserver implements Control
         if(retList == null)
         {
              List<Object> infolist = new ArrayList<Object>();
-             infolist.add("<[" + iterAppend + ", " + iterAppend+ "," + Boolean.toString(isEmpty) + "]>");
+             infolist.add("<[" + iterAppend + ", " + (iterAppend + interval) + "," + Boolean.toString(isEmpty) + ")>");
              //infolist.add("<[" + iterAppend + "]>");
 
              for(int i = 0; i < culturalCodeSize; i++)
              {
-                 infolist.add("<[" + iterAppend + ", " + iterAppend + "," + culturalCode[i] + "]>");
+                 infolist.add("<[" + iterAppend + ", " + (iterAppend + interval) + "," + culturalCode[i] + ")>");
              }
 
              dump.put(siteID, infolist);
         }
         else
         {
-            retList.set(0, retList.get(0).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + iterAppend + "," + Boolean.toString(isEmpty) + "]>");
+            retList.set(0, retList.get(0).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + (iterAppend + interval) + "," + Boolean.toString(isEmpty) + ")>");
             //retList.set(1, retList.get(1).toString().replaceAll("\\]>$", "") + "," + iterAppend + "]>");
 
             for(int i = 0; i < culturalCodeSize; i++)
             {
-                retList.set(1 + i, retList.get(1 + i).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + iterAppend + "," + culturalCode[i] + "]>");
+                retList.set(1 + i, retList.get(1 + i).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + (iterAppend + interval) + "," + culturalCode[i] + ")>");
             }
         }
     }
@@ -202,7 +202,7 @@ public class ASObserver implements Control
         {
             try
             {
-                String infostring = entry.getValue().toString().replaceAll("^\\[|\\[$", "");
+                String infostring = entry.getValue().toString().replaceAll("^\\[|\\]$", "");
                 infostring = infostring.replaceAll(">, ", ">\t");
                 nodePrinter.printRecord(entry.getKey(), infostring);
             } catch (IOException e)
