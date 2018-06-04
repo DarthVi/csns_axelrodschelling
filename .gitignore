@@ -4,6 +4,7 @@
 # User-specific stuff
 .idea/
 csns_project.iml
+snapshots/
 
 # CMake
 cmake-build-debug/

@@ -127,15 +127,15 @@ public class ASObserver implements Control
             {
                 e.printStackTrace();
             }
+        }
 
-            try
-            {
-                nodePrinter.close();
-                edgePrinter.close();
-            } catch (IOException | NullPointerException e)
-            {
-                e.printStackTrace();
-            }
+        try
+        {
+            nodePrinter.close();
+            edgePrinter.close();
+        } catch (IOException | NullPointerException e)
+        {
+            e.printStackTrace();
         }
 
     }
