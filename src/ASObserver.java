@@ -52,14 +52,14 @@ public class ASObserver implements Control
             String[] NODE_HEADERS;
 
             //node headers depends on cultural code size, cannot be defined as a static final field
-            NODE_HEADERS = new String[3 + culturalCodeSize];
+            NODE_HEADERS = new String[2 + culturalCodeSize];
             NODE_HEADERS[0] = "Id";
             NODE_HEADERS[1] = "Empty";
-            NODE_HEADERS[2] = "Interval";
+            //NODE_HEADERS[2] = "Interval";
 
-            for(int j = 3; j < NODE_HEADERS.length; j++)
+            for(int j = 2; j < NODE_HEADERS.length; j++)
             {
-                NODE_HEADERS[j] = "code" + (j-3);
+                NODE_HEADERS[j] = "code" + (j-2);
             }
             nodePrinter = new CSVPrinter(outNodes, CSVFormat.DEFAULT.withHeader(NODE_HEADERS).withQuote(null).withDelimiter('\t'));
         }
@@ -131,24 +131,24 @@ public class ASObserver implements Control
         if(retList == null)
         {
              List<Object> infolist = new ArrayList<Object>();
-             infolist.add("<[" + iterAppend + ", " + (iterAppend + interval) + "," + Boolean.toString(isEmpty) + "]>");
-             infolist.add("<[" + iterAppend + "]>");
+             infolist.add("<[" + iterAppend + ", " + iterAppend+ "," + Boolean.toString(isEmpty) + "]>");
+             //infolist.add("<[" + iterAppend + "]>");
 
              for(int i = 0; i < culturalCodeSize; i++)
              {
-                 infolist.add("<[" + iterAppend + ", " + (iterAppend + interval) + "," + culturalCode[i] + "]>");
+                 infolist.add("<[" + iterAppend + ", " + iterAppend + "," + culturalCode[i] + "]>");
              }
 
              dump.put(siteID, infolist);
         }
         else
         {
-            retList.set(0, retList.get(0).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + (iterAppend + interval) + "," + Boolean.toString(isEmpty) + "]>");
-            retList.set(1, retList.get(1).toString().replaceAll("\\]>$", "") + "," + iterAppend + "]>");
+            retList.set(0, retList.get(0).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + iterAppend + "," + Boolean.toString(isEmpty) + "]>");
+            //retList.set(1, retList.get(1).toString().replaceAll("\\]>$", "") + "," + iterAppend + "]>");
 
             for(int i = 0; i < culturalCodeSize; i++)
             {
-                retList.set(2 + i, retList.get(2 + i).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + (iterAppend + interval) + "," + culturalCode[i] + "]>");
+                retList.set(1 + i, retList.get(1 + i).toString().replaceAll(">$", "") + ";" + "[" + iterAppend + ", " + iterAppend + "," + culturalCode[i] + "]>");
             }
         }
     }
