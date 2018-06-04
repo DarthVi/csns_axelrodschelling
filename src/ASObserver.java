@@ -82,13 +82,14 @@ public class ASObserver implements Control
             }
 
             //node headers depends on cultural code size, cannot be defined as a static final field
-            NODE_HEADERS = new String[2 + culturalCode.length];
-            NODE_HEADERS[0] = "id";
-            NODE_HEADERS[1] = "empty";
+            NODE_HEADERS = new String[3 + culturalCode.length];
+            NODE_HEADERS[0] = "Id";
+            NODE_HEADERS[1] = "Empty";
+            NODE_HEADERS[2] = "Interval";
 
-            for(int j = 2; j < NODE_HEADERS.length; j++)
+            for(int j = 3; j < NODE_HEADERS.length; j++)
             {
-                NODE_HEADERS[j] = "code" + (j-2);
+                NODE_HEADERS[j] = "code" + (j-3);
             }
 
             if(nodePrinter == null || edgePrinter == null)
@@ -111,7 +112,7 @@ public class ASObserver implements Control
             try
             {
 
-                nodePrinter.printRecord(siteID, isEmpty, Arrays.toString(culturalCode).replaceAll("[\\\" \\[\\]]", ""));
+                nodePrinter.printRecord(siteID, isEmpty, "\"[" + iterAppend + ", " + (iterAppend+interval) + "]\"", Arrays.toString(culturalCode).replaceAll("[\\\" \\[\\]]", ""));
 
 
                 for(long id : neighborsID)
@@ -126,15 +127,15 @@ public class ASObserver implements Control
             {
                 e.printStackTrace();
             }
-        }
 
-        try
-        {
-            nodePrinter.close();
-            edgePrinter.close();
-        } catch (IOException | NullPointerException e)
-        {
-            e.printStackTrace();
+            try
+            {
+                nodePrinter.close();
+                edgePrinter.close();
+            } catch (IOException | NullPointerException e)
+            {
+                e.printStackTrace();
+            }
         }
 
     }
