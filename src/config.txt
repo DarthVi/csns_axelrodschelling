@@ -33,4 +33,5 @@ include.init rnd asinit
 
 control.asobserver ASObserver
 control.asobserver.logInterval 2
+control.asobserver.f_value 3
 control.asobserver.protocol axelschel
