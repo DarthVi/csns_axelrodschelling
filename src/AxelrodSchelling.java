@@ -181,4 +181,9 @@ public class AxelrodSchelling implements CDProtocol {
 
         return average/nonEmptyNeighbours.size();
     }
+
+    public void addEmptyNode(Site site)
+    {
+        emptySites.add(site);
+    }
 }

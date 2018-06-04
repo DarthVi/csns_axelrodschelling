@@ -12,6 +12,11 @@ public class Interaction implements CDProtocol
     private static boolean moveActivity = false;
     private static boolean culturalChanges = false;
 
+    public Interaction(String prefix)
+    {
+        //do nothing
+    }
+
     public Object clone()
     {
         Interaction interaction = null;

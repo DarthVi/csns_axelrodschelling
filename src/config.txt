@@ -1,11 +1,11 @@
-#AxelrodSchelling simulation 1
+# AxelrodSchelling simulation 1
 
 random.seed 95199254
-simulation.cycles 500
+simulation.cycles 30
 
 control.shf Shuffle
 
-network.size 1000
+network.size 100
 network.node Site
 
 protocol.lnk IdleProtocol
@@ -15,19 +15,22 @@ protocol.interaction Interaction
 protocol.axelschel AxelrodSchelling
 protocol.axelschel.linkable lnk
 protocol.axelschel.empty_probability 0.3
-protocol.axelschel.T_treshold 0.51
+protocol.axelschel.T_threshold 0.51
 order.protocol interaction axelschel
 
 init.rnd WireKOut
 init.rnd.protocol lnk
-init.rnd.k 20
+init.rnd.k 4
+init.rnd.undir true
 
 init.asinit ASInitializer
 init.asinit.empty_probability 0.3
 init.asinit.f_value 3
-init.asinit.qvalue 3
+init.asinit.q_value 3
+init.asinit.protocol axelschel
 order.init rnd asinit
+include.init rnd asinit
 
 control.asobserver ASObserver
-control.asobserver.logInterval 100
+control.asobserver.logInterval 2
 control.asobserver.protocol axelschel

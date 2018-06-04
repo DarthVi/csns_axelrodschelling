@@ -15,17 +15,20 @@ public class ASInitializer implements Control
     private static final String E_PROB = "empty_probability";
     private static final String F_VALUE = "f_value";
     private static final String Q_VALUE = "q_value";
+    private static final String PAR_PROT = "protocol";
 
     //FIELDS
     private double emptyProbability;
     private int culturalCodeSize;
     private int qvalue;
+    private int protocolPid;
 
     public ASInitializer(String prefix)
     {
         emptyProbability = Configuration.getDouble(prefix + "." + E_PROB);
         culturalCodeSize = Configuration.getInt(prefix + "." + F_VALUE);
         qvalue = Configuration.getInt(prefix + "." + Q_VALUE);
+        protocolPid = Configuration.getPid(prefix + "." + PAR_PROT);
     }
 
     @Override
@@ -36,9 +39,13 @@ public class ASInitializer implements Control
             Site site = (Site) Network.get(i);
             site.allocSigma(new int[culturalCodeSize]);
 
-            //il nodo è vuoto con probabilità emptyProbability
-            if(CommonState.r.nextDouble() <= emptyProbability)
+            //il nodo è vuoto con probabilità emptyProbability, at least one node empty
+            if(CommonState.r.nextDouble() <= emptyProbability || i==0)
+            {
                 site.setEmpty(true);
+                AxelrodSchelling axs = (AxelrodSchelling) site.getProtocol(protocolPid);
+                axs.addEmptyNode(site);
+            }
             else
             {
                 site.setEmpty(false);

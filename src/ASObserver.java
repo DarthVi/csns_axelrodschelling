@@ -44,7 +44,7 @@ public class ASObserver implements Control
             serializeNetworkSnapshot(iterations);
 
         //if no imitation or movements occur, stop the simulation
-        return (!Interaction.getCulturalChanges() && !Interaction.getMoveActivity());
+        return (Interaction.getCulturalChanges() == false && Interaction.getMoveActivity() == false && iterations != 1);
     }
 
     /**
@@ -57,6 +57,11 @@ public class ASObserver implements Control
     private void serializeNetworkSnapshot(int iterAppend)
     {
         String[] NODE_HEADERS = null;
+        FileWriter outNodes = null;
+        FileWriter outEdges = null;
+        CSVPrinter nodePrinter = null;
+        CSVPrinter edgePrinter = null;
+
 
         for(int i=0; i < Network.size(); i++)
         {
@@ -86,30 +91,50 @@ public class ASObserver implements Control
                 NODE_HEADERS[j] = "code" + (j-2);
             }
 
+            if(nodePrinter == null || edgePrinter == null)
+            {
+                try
+                {
+                    outNodes = new FileWriter("./snapshots/" + NODEFILENAME + iterAppend + ".csv");
+                    outEdges = new FileWriter("./snapshots/" + EDGEFILENAME + iterAppend + ".csv");
+
+                    nodePrinter = new CSVPrinter(outNodes, CSVFormat.DEFAULT.withHeader(NODE_HEADERS).withQuote(null));
+                    edgePrinter = new CSVPrinter(outEdges, CSVFormat.DEFAULT.withHeader(EDGE_HEADERS));
+                }
+                catch(IOException e)
+                {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
             try
             {
-                FileWriter outNodes = new FileWriter("./snapshots/" + NODEFILENAME + iterAppend + ".csv");
-                FileWriter outEdges = new FileWriter("./snapshots/" + EDGEFILENAME + iterAppend + ".csv");
 
-                CSVPrinter nodePrinter = new CSVPrinter(outNodes, CSVFormat.DEFAULT.withHeader(NODE_HEADERS));
+                nodePrinter.printRecord(siteID, isEmpty, Arrays.toString(culturalCode).replaceAll("[\\\" \\[\\]]", ""));
 
-                nodePrinter.printRecord(siteID, isEmpty, Arrays.toString(culturalCode));
-
-                CSVPrinter edgePrinter = new CSVPrinter(outEdges, CSVFormat.DEFAULT.withHeader(EDGE_HEADERS));
 
                 for(long id : neighborsID)
                 {
                     edgePrinter.printRecord(siteID, id);
                 }
 
-                outNodes.close();
-                outEdges.close();
+
 
             }
-            catch(IOException e)
+            catch(IOException | NullPointerException e)
             {
                 e.printStackTrace();
             }
+        }
+
+        try
+        {
+            nodePrinter.close();
+            edgePrinter.close();
+        } catch (IOException | NullPointerException e)
+        {
+            e.printStackTrace();
         }
 
     }

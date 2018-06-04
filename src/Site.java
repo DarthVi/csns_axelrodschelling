@@ -16,14 +16,14 @@ public class Site extends GeneralNode {
     public Site(String prefix)
     {
         super(prefix);
-
+        this.sigma = null;
         this.empty = true;
     }
 
     public Object clone()
     {
         Site result = (Site) super.clone();
-        result.sigma = this.sigma.clone();
+        result.sigma = this.sigma;
         result.empty = this.empty;
         return result;
     }
