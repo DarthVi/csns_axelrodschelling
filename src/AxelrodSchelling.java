@@ -49,34 +49,35 @@ public class AxelrodSchelling implements CDProtocol {
     public void nextCycle(Node node, int pid)
     {
 
-        Linkable link = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
-        List<Integer> nonEmptyNeighbours = getNonEmptyNeighbours(node, pid);
-
-        if(!nonEmptyNeighbours.isEmpty())
+        if(!((Site)node).isEmpty())
         {
-            int neighbourIndex = nonEmptyNeighbours.get(CommonState.r.nextInt(nonEmptyNeighbours.size()));
-            Site peer = (Site) link.getNeighbor(neighbourIndex);
+            Linkable link = (Linkable) node.getProtocol(FastConfig.getLinkable(pid));
+            List<Integer> nonEmptyNeighbours = getNonEmptyNeighbours(node, pid);
 
-            double culturalOverlap = computeCulturalOverlap((Site) node, peer);
-
-            int chosenTraitIndex = CommonState.r.nextInt(peer.getSigmaSize());
-            int chosenTrait = peer.getSigma(chosenTraitIndex);
-
-            //copy cultural trait with probability equal to culturalOverlap
-            if(CommonState.r.nextDouble() <= culturalOverlap)
+            if (!nonEmptyNeighbours.isEmpty())
             {
-                ((Site) node).setSigma(chosenTraitIndex, chosenTrait);
-                Interaction.setCulturalChanges(true);
-            }
-            else
+                int neighbourIndex = nonEmptyNeighbours.get(CommonState.r.nextInt(nonEmptyNeighbours.size()));
+                Site peer = (Site) link.getNeighbor(neighbourIndex);
+
+                double culturalOverlap = computeCulturalOverlap((Site) node, peer);
+
+                int chosenTraitIndex = CommonState.r.nextInt(peer.getSigmaSize());
+                int chosenTrait = peer.getSigma(chosenTraitIndex);
+
+                //copy cultural trait with probability equal to culturalOverlap
+                if (CommonState.r.nextDouble() <= culturalOverlap)
+                {
+                    ((Site) node).setSigma(chosenTraitIndex, chosenTrait);
+                    Interaction.setCulturalChanges(true);
+                } else
+                {
+                    if (computeAverageCulturalOverlap((Site) node, pid) < toleranceThreshold)
+                        moveToEmptySite((Site) node);
+                }
+            } else
             {
-                if(computeAverageCulturalOverlap((Site) node, pid) < toleranceThreshold)
-                    moveToEmptySite((Site) node);
+                moveToEmptySite((Site) node);
             }
-        }
-        else
-        {
-            moveToEmptySite((Site) node);
         }
     }
 
