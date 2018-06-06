@@ -10,6 +10,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * This observer checks if the simulation must be stopped (no moves or imitations occured) or not.
+ * Moreover it saves the network evolution in a CSV format compatible with Gephi.
+ * Two csv: one for the edges and one for nodes.
+ *
+ * The csv for nodes saves the network evolution following the interval attribute syntax of Gephi.
+ * In the following line there's an example of one line with its header.
+ *
+ * id   empty   code1   code2   code3
+ * 0    <[2,4, true); [4,6,false)>  <[2,4,0];[4,6,1]> ..and so on
+ *
+ * See <a href="https://gephi.org/users/supported-graph-formats/spreadsheet/">Gephi spreadsheet</a> for more informations.
+ */
 public class ASObserver implements Control
 {
 
@@ -70,6 +83,12 @@ public class ASObserver implements Control
         }
     }
 
+    /**
+     * Check if no moves or imitations occured. If so, stops the simulation.
+     * Moreover a network state snapshot is saved at regular intervals, with the interval
+     * defined in the configuration file.
+     * @return      boolean, true if the simulation must be stopped
+     */
     @Override
     public boolean execute()
     {
@@ -88,6 +107,9 @@ public class ASObserver implements Control
         //if no imitation or movements occur, stop the simulation
         if((Interaction.getCulturalChanges() == false && Interaction.getMoveActivity() == false && iterations != 1) == true)
         {
+            if(iterations % interval != 0)
+                saveNetworkSnapshot(iterations);
+
             serializeNetworkSnapshot();
             closeCSVPrinters();
             return true;
@@ -153,6 +175,9 @@ public class ASObserver implements Control
         }
     }
 
+    /**
+     * Simply close the {@link org.apache.commons.csv.CSVPrinter} used to store the network state in CSV format
+     */
     public void closeCSVPrinters()
     {
         try
@@ -165,6 +190,11 @@ public class ASObserver implements Control
         }
     }
 
+    /**
+     * Saves the edges of the network in edges.csv.
+     * Syntax of the csv:
+     * sourceID,targetID
+     */
     public void serializeEdges()
     {
         for(int i=0; i < Network.size(); i++)
@@ -196,6 +226,9 @@ public class ASObserver implements Control
         }
     }
 
+    /**
+     * Saves the network's sites attributes in nodes.csv
+     */
     public void serializeNetworkSnapshot()
     {
         for(Map.Entry<Long, List<Object>> entry : dump.entrySet())
