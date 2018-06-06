@@ -98,8 +98,9 @@ public class ASObserver implements Control
             serializeEdges();
         }
 
+        //saves state at the beginning and at regular intervals
         iterations++;
-        if(iterations % interval == 0)
+        if(iterations % interval == 0 || iterations == 1)
         {
             saveNetworkSnapshot(iterations);
         }
@@ -107,6 +108,7 @@ public class ASObserver implements Control
         //if no imitation or movements occur, stop the simulation
         if((Interaction.getCulturalChanges() == false && Interaction.getMoveActivity() == false && iterations != 1) == true)
         {
+            //always saves the state at the end of the simulation
             if(iterations % interval != 0)
                 saveNetworkSnapshot(iterations);
 
