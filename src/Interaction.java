@@ -9,8 +9,8 @@ import peersim.core.Node;
 public class Interaction implements CDProtocol
 {
     //FIELDS
-    private static boolean moveActivity = false;
-    private static boolean culturalChanges = false;
+    private static int moveActivity = 0;
+    private static int culturalChanges = 0;
 
     public Interaction(String prefix)
     {
@@ -32,26 +32,26 @@ public class Interaction implements CDProtocol
     @Override
     public void nextCycle(Node node, int i)
     {
-        Interaction.moveActivity = false;
-        Interaction.culturalChanges = false;
+        Interaction.moveActivity = 0;
+        Interaction.culturalChanges = 0;
     }
 
-    public static void setMoveActivity(boolean value)
+    public static void setMoveActivity()
     {
-        Interaction.moveActivity = value;
+        Interaction.moveActivity++;
     }
 
-    public static boolean getMoveActivity()
+    public static int getMoveActivity()
     {
         return Interaction.moveActivity;
     }
 
-    public static void setCulturalChanges(boolean value)
+    public static void setCulturalChanges()
     {
-        Interaction.culturalChanges = value;
+        Interaction.culturalChanges++;
     }
 
-    public static boolean getCulturalChanges()
+    public static int getCulturalChanges()
     {
         return Interaction.culturalChanges;
     }

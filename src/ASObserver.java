@@ -106,7 +106,7 @@ public class ASObserver implements Control
         }
 
         //if no imitation or movements occur, stop the simulation
-        if((Interaction.getCulturalChanges() == false && Interaction.getMoveActivity() == false && iterations != 1) == true)
+        if((Interaction.getCulturalChanges() == 0 && Interaction.getMoveActivity() == 0 && iterations != 1) == true)
         {
             //always saves the state at the end of the simulation
             if(iterations % interval != 0)
