@@ -9,8 +9,8 @@ import peersim.core.Node;
 public class Interaction implements CDProtocol
 {
     //FIELDS
-    private static int moveActivity = 0;
-    private static int culturalChanges = 0;
+    private static long moveActivity = 0;
+    private static long culturalChanges = 0;
 
     public Interaction(String prefix)
     {
@@ -41,7 +41,7 @@ public class Interaction implements CDProtocol
         Interaction.moveActivity++;
     }
 
-    public static int getMoveActivity()
+    public static long getMoveActivity()
     {
         return Interaction.moveActivity;
     }
@@ -51,7 +51,7 @@ public class Interaction implements CDProtocol
         Interaction.culturalChanges++;
     }
 
-    public static int getCulturalChanges()
+    public static long getCulturalChanges()
     {
         return Interaction.culturalChanges;
     }
