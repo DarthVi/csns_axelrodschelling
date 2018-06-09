@@ -68,7 +68,7 @@ public class AxelrodSchelling implements CDProtocol {
                 if (CommonState.r.nextDouble() <= culturalOverlap)
                 {
                     ((Site) node).setSigma(chosenTraitIndex, chosenTrait);
-                    Interaction.setCulturalChanges(true);
+                    Interaction.setCulturalChanges();
                 } else
                 {
                     if (computeAverageCulturalOverlap((Site) node, pid) < toleranceThreshold)
@@ -120,7 +120,7 @@ public class AxelrodSchelling implements CDProtocol {
         currentSite.setEmpty(true);
         emptySites.remove(emptySiteIndex);
         emptySites.add(currentSite);
-        Interaction.setMoveActivity(true);
+        Interaction.setMoveActivity();
     }
 
     /**
